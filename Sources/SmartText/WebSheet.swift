@@ -5,10 +5,6 @@ import SafariServices
 
 class ObservableURL: ObservableObject {
     @Published var url: URL?
-    
-    init(_ url: URL?) {
-        self.url = url
-    }
 }
 
 struct SafariView: UIViewControllerRepresentable {
@@ -29,10 +25,14 @@ struct SafariView: UIViewControllerRepresentable {
 
 struct WebSheet: View {
     
-    var url: URL
+    var url: URL?
     
     var body: some View {
-        SafariView(url: url)
-            .edgesIgnoringSafeArea(.bottom)
+        if let url = self.url {
+            SafariView(url: url)
+                .edgesIgnoringSafeArea(.bottom)
+        } else {
+            Text("Cannot open url")
+        }
     }
 }

@@ -6,7 +6,7 @@ public struct SmartText: View {
     
     @State private var showWebSheet: Bool = false
     
-    @ObservedObject private var webURL: ObservableURL = ObservableURL(nil)
+    @ObservedObject private var webURL: ObservableURL = ObservableURL()
 
     private let attributedText: NSAttributedString
 
@@ -30,7 +30,7 @@ public struct SmartText: View {
         )
         .fixedSize(horizontal: false, vertical: true)
         .sheet(isPresented: $showWebSheet) {
-            WebSheet(url: webURL.url!)
+            WebSheet(url: webURL.url)
         }
     }
 }

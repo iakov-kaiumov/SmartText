@@ -22,7 +22,7 @@ struct TextViewWrapper: UIViewRepresentable {
         }
     }
 
-    final class Coordinator: NSObject, UITextViewDelegate {
+    class Coordinator: NSObject, UITextViewDelegate {
         var parent: TextViewWrapper
 
         init(_ view: TextViewWrapper) {
@@ -32,6 +32,7 @@ struct TextViewWrapper: UIViewRepresentable {
         func textView(_: UITextView, shouldInteractWith URL: URL, in _: NSRange, interaction _: UITextItemInteraction) -> Bool {
             DispatchQueue.main.async {
                 self.parent.webURL.url = URL
+                print(URL)
                 self.parent.showWebSheet = true
             }
             return false
@@ -49,9 +50,7 @@ struct TextViewWrapper: UIViewRepresentable {
 
         uiView.backgroundColor = .clear
         uiView.textContainerInset = .zero
-        #if !os(tvOS)
-            uiView.isEditable = false
-        #endif
+        uiView.isEditable = false
         uiView.isScrollEnabled = false
         uiView.textContainer.lineFragmentPadding = 0
         uiView.dataDetectorTypes = .link
