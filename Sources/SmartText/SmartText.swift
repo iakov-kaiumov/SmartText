@@ -1,14 +1,20 @@
-
+import UIKit
 import SwiftUI
 
+
+/**
+ UITextView analog for SwiftUI
+ */
 public struct SmartText: View {
     @StateObject private var textViewStore = TextViewStore()
     
     @State private var showWebSheet: Bool = false
     
-    @ObservedObject private var webURL: ObservableURL = ObservableURL()
+    @State private var webURL: ObservableURL = ObservableURL()
 
     private let attributedText: NSAttributedString
+    
+    private var dataDetectorTypes: UIDataDetectorTypes = .link
 
     public init(_ attributedText: NSAttributedString) {
         self.attributedText = attributedText
@@ -21,7 +27,8 @@ public struct SmartText: View {
                 maxLayoutWidth: geometry.maxWidth,
                 textViewStore: textViewStore,
                 webURL: webURL,
-                showWebSheet: $showWebSheet
+                showWebSheet: $showWebSheet,
+                dataDetectorTypes: dataDetectorTypes
             )
         }
         .frame(
@@ -30,8 +37,16 @@ public struct SmartText: View {
         )
         .fixedSize(horizontal: false, vertical: true)
         .sheet(isPresented: $showWebSheet) {
-            WebSheet(url: webURL.url)
+            WebSheet(url: webURL.url!)
         }
+    }
+}
+
+extension SmartText {
+    func dataDetectorTypes(_ dataDetectorTypes: UIDataDetectorTypes) -> SmartText {
+        var view = self
+        view.dataDetectorTypes = dataDetectorTypes
+        return view
     }
 }
 

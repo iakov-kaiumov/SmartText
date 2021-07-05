@@ -25,14 +25,10 @@ struct SafariView: UIViewControllerRepresentable {
 
 struct WebSheet: View {
     
-    var url: URL?
+    var url: URL
     
     var body: some View {
-        if let url = self.url {
-            SafariView(url: url)
-                .edgesIgnoringSafeArea(.bottom)
-        } else {
-            Text("Cannot open url")
-        }
+        SafariView(url: url)
+            .edgesIgnoringSafeArea(.bottom)
     }
 }
