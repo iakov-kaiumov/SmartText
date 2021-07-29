@@ -24,7 +24,7 @@ public struct SmartText: View {
         GeometryReader { geometry in
             TextViewWrapper(
                 attributedText: attributedText,
-                maxLayoutWidth: geometry.maxWidth,
+                maxLayoutWidth: geometry.frame(in: .global).width,
                 textViewStore: textViewStore,
                 webURL: webURL,
                 showWebSheet: $showWebSheet,
@@ -32,10 +32,9 @@ public struct SmartText: View {
             )
         }
         .frame(
-            idealWidth: textViewStore.intrinsicContentSize?.width,
-            idealHeight: textViewStore.intrinsicContentSize?.height
+            width: textViewStore.intrinsicContentSize?.width,
+            height: textViewStore.intrinsicContentSize?.height
         )
-        .fixedSize(horizontal: false, vertical: true)
         .sheet(isPresented: $showWebSheet) {
             WebSheet(url: webURL.url!)
         }

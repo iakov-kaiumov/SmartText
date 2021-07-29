@@ -22,10 +22,14 @@ struct TextViewWrapper: UIViewRepresentable {
         }
 
         override var intrinsicContentSize: CGSize {
+            if super.intrinsicContentSize.width < maxLayoutWidth {
+                return super.intrinsicContentSize
+            }
+            
             guard maxLayoutWidth > 0 else {
                 return super.intrinsicContentSize
             }
-
+            
             return sizeThatFits(
                 CGSize(width: maxLayoutWidth, height: .greatestFiniteMagnitude)
             )
@@ -39,12 +43,27 @@ struct TextViewWrapper: UIViewRepresentable {
             self.parent = view
         }
 
-        func textView(_: UITextView, shouldInteractWith URL: URL, in _: NSRange, interaction _: UITextItemInteraction) -> Bool {
-            DispatchQueue.main.async {
-                self.parent.webURL.url = URL
-                self.parent.showWebSheet = true
+        func textView(_: UITextView, shouldInteractWith URL: URL, in _: NSRange, interaction: UITextItemInteraction) -> Bool {
+            
+            if interaction == .invokeDefaultAction {
+                openURL(URL)
+                return false
             }
-            return false
+            
+            return true
+        }
+        
+        func openURL(_ url: URL) {
+            if ["http", "https"].contains(url.scheme?.lowercased() ?? "") {
+                // Can open with SFSafariViewController
+                DispatchQueue.main.async {
+                    self.parent.webURL.url = url
+                    self.parent.showWebSheet = true
+                }
+            } else {
+                // Scheme is not supported or no scheme is given, use openURL
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
         }
     }
 
@@ -64,7 +83,6 @@ struct TextViewWrapper: UIViewRepresentable {
         uiView.textContainer.lineFragmentPadding = 0
         uiView.dataDetectorTypes = dataDetectorTypes
         uiView.delegate = context.coordinator
-
         return uiView
     }
 
