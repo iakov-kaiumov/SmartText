@@ -24,7 +24,7 @@ public struct SmartText: View {
         GeometryReader { geometry in
             TextViewWrapper(
                 attributedText: attributedText,
-                maxLayoutWidth: geometry.frame(in: .global).width,
+                maxLayoutWidth: geometry.maxWidth,
                 textViewStore: textViewStore,
                 webURL: webURL,
                 showWebSheet: $showWebSheet,
@@ -35,13 +35,14 @@ public struct SmartText: View {
             width: textViewStore.intrinsicContentSize?.width,
             height: textViewStore.intrinsicContentSize?.height
         )
+        .fixedSize(horizontal: false, vertical: true)
         .sheet(isPresented: $showWebSheet) {
             WebSheet(url: webURL.url!)
         }
     }
 }
 
-extension SmartText {
+public extension SmartText {
     func dataDetectorTypes(_ dataDetectorTypes: UIDataDetectorTypes) -> SmartText {
         var view = self
         view.dataDetectorTypes = dataDetectorTypes
