@@ -15,6 +15,8 @@ public struct SmartText: View {
     private let attributedText: NSAttributedString
     
     private var dataDetectorTypes: UIDataDetectorTypes = .link
+    
+    private var useInbuiltBrowser: Bool = true
 
     public init(_ attributedText: NSAttributedString) {
         self.attributedText = attributedText
@@ -32,8 +34,8 @@ public struct SmartText: View {
             )
         }
         .frame(
-            width: textViewStore.intrinsicContentSize?.width,
-            height: textViewStore.intrinsicContentSize?.height
+            idealWidth: textViewStore.intrinsicContentSize?.width,
+            idealHeight: textViewStore.intrinsicContentSize?.height
         )
         .fixedSize(horizontal: false, vertical: true)
         .sheet(isPresented: $showWebSheet) {
@@ -46,6 +48,12 @@ public extension SmartText {
     func dataDetectorTypes(_ dataDetectorTypes: UIDataDetectorTypes) -> SmartText {
         var view = self
         view.dataDetectorTypes = dataDetectorTypes
+        return view
+    }
+    
+    func useInbuiltBrowser(_ use: Bool) -> SmartText {
+        var view = self
+        view.useInbuiltBrowser = use
         return view
     }
 }

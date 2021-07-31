@@ -54,16 +54,18 @@ struct TextViewWrapper: UIViewRepresentable {
         }
         
         func openURL(_ url: URL) {
-            if ["http", "https"].contains(url.scheme?.lowercased() ?? "") {
-                // Can open with SFSafariViewController
-                DispatchQueue.main.async {
-                    self.parent.webURL.url = url
-                    self.parent.showWebSheet = true
+            if parent.useInbuiltBrowser {
+                if ["http", "https"].contains(url.scheme?.lowercased() ?? "") {
+                    // Can open with SFSafariViewController
+                    DispatchQueue.main.async {
+                        self.parent.webURL.url = url
+                        self.parent.showWebSheet = true
+                    }
+                    return
                 }
-            } else {
-                // Scheme is not supported or no scheme is given, use openURL
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
+            // Scheme is not supported or no scheme is given, use openURL
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
     }
 
@@ -73,6 +75,7 @@ struct TextViewWrapper: UIViewRepresentable {
     @ObservedObject var webURL: ObservableURL
     @Binding var showWebSheet: Bool
     let dataDetectorTypes: UIDataDetectorTypes
+    let useInbuiltBrowser: Bool = true
 
     func makeUIView(context: Context) -> View {
         let uiView = View()
